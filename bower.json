@@ -1,0 +1,14 @@
+{
+  "name": "Neurons",
+  "version": "0.0.1",
+  "homepage": "https://github.com/platdesign/Neurons",
+  "authors": [
+    "platdesign"
+  ],
+  "keywords": [
+    "php",
+    "dependencyinjection",
+    "angularjs"
+  ],
+  "license": "MIT"
+}
