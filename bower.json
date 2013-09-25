@@ -10,6 +10,6 @@
     "dependencyinjection",
     "angularjs"
   ],
-  "license": "MIT"
+  "license": "MIT",
   "main":"nrns.php"
 }
