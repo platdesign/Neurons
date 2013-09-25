@@ -11,4 +11,5 @@
     "angularjs"
   ],
   "license": "MIT"
+  "main":"nrns.php"
 }
