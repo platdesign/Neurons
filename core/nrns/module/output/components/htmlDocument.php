@@ -1,4 +1,6 @@
 <?PHP
+namespace nrns\module\output\components;
+
 	class htmlDocument extends outputDocument {
 		private $head;
 		private $body;
@@ -13,7 +15,7 @@
 		}
 		
 		private function __setStructur() {
-			$this->head = new stdClass;
+			$this->head = new \stdClass;
 			$this->head->assets = ["CSS"=>[], "JS"=>[]];
 			$this->head->meta = [];
 		}

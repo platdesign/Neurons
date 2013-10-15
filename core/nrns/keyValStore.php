@@ -13,6 +13,10 @@
 			return (isset($this->store[$key])) ? $this->store[$key] : null;
 		}
 		
+		public function getAll() {
+			return $this->store;
+		}
+		
 		public function getAllKeys() {
 			return array_keys($this->store);
 		}

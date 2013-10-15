@@ -1,5 +1,11 @@
 <?PHP
-namespace nrns {
+namespace nrns\module\request\components;
+	
+	
+	
+	
+	
+	
 	class request {
 		public function __construct() {
 			$this->server 		= $_SERVER;
@@ -63,6 +69,6 @@ namespace nrns {
 		}
 	}
 	
-}
+
 
 ?>

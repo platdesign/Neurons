@@ -5,9 +5,8 @@ define("nrns", true);
 	final class nrns {
 		
 		public static function application(){
-			$backtrace = debug_backtrace();
-
-			$rootpath = dirname($backtrace[0]['file']);
+			
+			$rootpath = dirname($_SERVER['SCRIPT_FILENAME']);;
 			$nrnspath = dirname(__FILE__);
 			
 			require $nrnspath . "/core/autoloader.php";
@@ -31,9 +30,7 @@ define("nrns", true);
 			autoloader::assign(self::$rootpath . "/" . $path);
 		}
 	
-		public static function closure($closure, $scope=null) {
-			return new nrns\JSClosure($closure, $scope);
-		}
+		
 	
 		public static function loadTemplateContent($filename, $globals=[]) {
 			if( file_exists($filename) ) {
@@ -77,6 +74,21 @@ define("nrns", true);
 		}
 	
 	
+		/**
+		 * Returns a JSClosure-Instance
+		 *
+		 * @param string $closure 
+		 * @param string $scope 
+		 * @return JSClosure
+		 * @author Christian Blaschke
+		 */
+		public static function closure($closure, $scope=null) {
+			return new nrns\JSClosure($closure, $scope);
+		}
+		
+		
+		
+		
 		
 		
 		

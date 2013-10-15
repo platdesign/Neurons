@@ -1,4 +1,6 @@
 <?PHP
+namespace nrns\module\request\components;
+
 class client {
 	
 	private $browser;

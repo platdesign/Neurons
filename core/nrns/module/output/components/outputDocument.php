@@ -1,4 +1,6 @@
 <?PHP
+namespace nrns\module\output\components;
+
 class outputDocument implements I_outputDocument {
 	
 	public function render(){

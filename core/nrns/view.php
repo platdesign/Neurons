@@ -13,8 +13,8 @@ class view {
 		$this->app = $app;
 	}
 	
-	public function addSubview($name, $view) {
-		$this->subview = $view;
+	public function addSubview($view) {
+		return $this->subview = $view;
 	}
 	
 	public function setScope($scope) {
@@ -35,18 +35,19 @@ class view {
 		
 		
 		
-		$this->setTemplateClosure(function($app, $injection, $request, $route, $output, $client, $scope, $plugin)use($url){
+		$this->setTemplateClosure(function($app, $injection, $request, $route, $output, $client, $scope)use($url){
 			
 			return \nrns::loadTemplateContent($url, [
 				"scope"		=>	$scope, 
 				"route"		=>	$route, 
 				"client"	=>	$client,
 				"app"		=>	$app, 
-				"injector"	=>	$injection, 
+				"injector"	=>	$injection,
+				"injection"	=>	$injection,
 				"request"	=>	$request,
 				"children"	=>	isset($this->subview)?$this->subview:"",
+				"subview"	=>	isset($this->subview)?$this->subview:"",
 				"output"	=>	$output,
-				"plugin"	=>	$plugin
 			]);
 				
 		});
@@ -59,43 +60,19 @@ class view {
 	
 	
 	
-	/*
-	public function setTemplateUrl($url) {
-		
-		
-		
-		$this->body = function()use($url) {
-			$view = $this;
-			return $this->injection->invokeClosure(function($app, $injector, $request, $route, $output, $client, $scope)use($url, $view){
-				
-				return \nrns::loadTemplateContent($url, [
-					"scope"		=>	$scope, 
-					"route"		=>	$route, 
-					"client"	=>	$client,
-					"app"		=>	$app, 
-					"injector"	=>	$injector, 
-					"request"	=>	$request,
-					"children"	=>	isset($view->subview)?$view->subview:"",
-					"output"	=>	$output
-				]);
-				
-			}, $this->scope);
-		
-		};
-			
-	}
-	*/
-	
-	
 	public function render() {
+		try {
+			//$this->scope->subview = $this->subview;
 		
-		$this->scope->subview = $this->subview;
+			if( isset($this->templateClosure) ) {
+				$this->body = $this->injection->invokeClosure($this->templateClosure, $this->scope);
+			}
 		
-		if( isset($this->templateClosure) ) {
-			$this->body = $this->injection->invokeClosure($this->templateClosure, $this->scope);
+			return (string) $this->body;
+		}catch(Exception $e){
+			
 		}
 		
-		return (string) $this->body;
 	}
 	
 	public function __tostring() {

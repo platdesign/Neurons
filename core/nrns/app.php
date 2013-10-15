@@ -1,6 +1,10 @@
 <?PHP namespace nrns;
 	
 	final class app extends provider\provider {
+		
+		// Load events-trait
+		use events;
+		
 		private $listener;
 		private $controller;
 
@@ -14,33 +18,74 @@
 			$this->__nrnspath = $nrnspath;
 			$this->__rootpath = $rootpath;
 			
-			$this->providerStore 	= new keyValStore();
 			
 			$this->controller 	= new keyValStore();
-			$this->listener 	= new keyValStore();
 			
 			
-			$this->injection 	= new provider\injectionProvider($this->providerStore, $this);
+			$this->initInjection();
 			
 			
-			$this->injection->invokeClosure(function($requestProvider, $routeProvider, $clientProvider){});
+			$this->dev(FALSE);
+			
+			
+		}
+
+		public function modules($array=[]) {
+			foreach($array as $module) {
+				$classname = "nrns\\module\\".$module;
+				if( class_exists($classname) ) {
+					
+					$this->injection->invokeClass($classname);
+				}
+			}
+		}
+
+		private function initInjection() {
+			$this->injection 	= new provider\injectionProvider();
+			$this->injection->provideInstance("app", $this);
+		
+		}
+
+
+		public function dev($bool=FALSE) {
+			switch($bool){
+				case TRUE:
+					error_reporting(-1);
+				break;
+				case FALSE:
+					error_reporting(0);
+					set_error_handler(function($code, $message, $file, $line){
+						return true;
+					});
+					
+					register_shutdown_function(function(){
+						return true;
+					});
+				break;
+			}
 		}
 
 
 		
-
-
 		public function factory($name, $closure) {
-			$factoryProvider = $this->injection->invokeClass("nrns\\provider\\factoryProvider");
-			$factoryProvider->setClosure($closure);
-			$this->injection->provide($name."Provider", $factoryProvider);
+			return $this->injection->provideFactory($name, $closure);
 		}
 
+		public function service($name, $closure) {
+			
+			$this->on("before:start", function()use($name, $closure) {
+				$this->injection->provideValue($name, call_user_func($closure));
+			});
+			
+		}
+		
+		
+		
 
 		// Config
 		public function config(callable $closure) {
 			
-			$this->addListener("before:start", function()use($closure){
+			$this->on("before:start", function()use($closure){
 			
 				try {
 					$this->injection->invokeClosure($closure->bindTo($this));
@@ -56,6 +101,7 @@
 
 
 
+
 		// Controllers
 		public function controller($key, $closure=null){
 			
@@ -66,7 +112,7 @@
 				} else {
 					
 					$controller = function($scope)use($closure){
-						return $this->injectionProvider->invokeClosure($closure, $scope);
+						return $this->injection->invokeClosure($closure, $scope);
 					};
 					$this->controller->set($key, $controller);
 				}
@@ -96,6 +142,21 @@
 		
 		
 		
+		public function onStart($closure) {
+			$this->addListener("before:start", function()use($closure){
+				$this->injection->invokeClosure($closure->bindTo($this));
+			});
+			return $this;
+		}
+		
+		public function onClose($closure) {
+			$this->addListener("before:close", function()use($closure){
+				$this->injection->invokeClosure($closure->bindTo($this));
+			});
+			return $this;
+		}
+		
+		
 		
 		
 		// Scoping
@@ -105,75 +166,14 @@
 		
 		
 		
-		
-		// Views
-		public function view($key, $deps=[], $closure) {
-			if( is_callable($closure) ) {
-				$this->controller($key.".view", $deps, $closure);
-			}
-		}
-
-		public function renderView($key, $scope) {
-			return $this->controller($key.".view", $scope);
-		}
-		
-		public function renderViewFromFile($filename, $scope) {
-			$viewName = md5($filename)."_tempView";
-			
-			$this->view($viewName, ['scope'], function($scope)use($filename){
-				require $filename;
-			});
-			
-			return $this->renderView($viewName, $scope);
-		}
-		
-		
-		
-		
-		
-		// Events
-		public function addListener($name, $closure) {
-			$ns = [];
-			
-			if( $oldNs = $this->listener->get($name) ) {
-				$ns = $oldNs;
-			}
-			
-			$ns[] = $closure;
-			$this->listener->set($name, $ns);
-		}
-		
-		public function triggerEvent($name) {
-			
-			if(substr($name, 0, 7)!="before:" AND substr($name, 0, 6)!="after:") {
-				$triggerPreAfter = true;
-			} else { $triggerPreAfter = false; }
-			
-			if( $triggerPreAfter ) {
-				$this->triggerEvent("before:".$name);
-			}
-			
-			$ns = $this->listener->get($name);
-			
-			if($ns) {
-				foreach($ns as $closure) {
-					call_user_func($closure);
-				}
-			}
-			
-			if( $triggerPreAfter ) {
-				$this->triggerEvent("after:".$name);
-			}
-			
-		}
-		
+	
 		
 		
 		
 		// BOOT THE APP
 		public function close() {
-			$this->triggerEvent("start");
-			$this->triggerEvent("close");
+			$this->trigger("start");
+			$this->trigger("close");
 		}
 	
 	

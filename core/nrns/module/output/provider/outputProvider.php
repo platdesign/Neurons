@@ -1,11 +1,9 @@
-<?PHP namespace nrns\provider {
+<?PHP 
 
-	require "I_outputDocument.php";
-	require "outputDocument.php";
-	require "htmlDocument.php";
+namespace nrns\module\output\provider;
+use nrns;
 	
-	
-	class outputProvider extends provider {
+	class outputProvider extends nrns\provider\provider {
 		
 		private $title;
 		
@@ -20,7 +18,7 @@
 			
 			$this->setType($this->type);
 			
-			$app->addListener("close", function(){
+			$app->on("close", function(){
 				$this->render();
 			});
 			
@@ -29,12 +27,13 @@
 		public function setType($type) {
 			$this->type = strtoupper($type);
 			
+			
 			switch($this->type) {
 				case "JSON":
-					$this->document = $this->injection->invokeClass("jsonDocument");
+					$this->document = $this->injection->invokeClass("nrns\\module\\output\\components\\jsonDocument");
 				break;
 				case "HTML":
-					$this->document = $this->injection->invokeClass("htmlDocument");
+					$this->document = $this->injection->invokeClass("nrns\\module\\output\\components\\htmlDocument");
 				break;
 			}
 		}
@@ -57,6 +56,6 @@
     
 	}
 	
-}	
+	
 
 ?>
