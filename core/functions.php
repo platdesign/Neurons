@@ -12,10 +12,10 @@ function clog($input) {
 	}
 	
 	
+	register_shutdown_function(function()use($input){
+		echo '<script type="text/javascript" charset="utf-8">console.log('.$input.');</script>';
+	});
 	
-	echo '<script type="text/javascript" charset="utf-8">
-		console.log('.$input.');
-	</script>';
 }
 
 function is_email($input) {

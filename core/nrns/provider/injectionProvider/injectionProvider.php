@@ -1,5 +1,6 @@
-<?PHP namespace nrns\provider;
-	
+<?PHP 
+
+	namespace nrns\provider;
 	use nrns;
 	
 	class injectionProvider extends provider {
@@ -23,9 +24,68 @@
 
 		public function __construct() {
 			$this->store = new nrns\keyValStore();
-			$this->provideInstance("injection", $this);
+			
+			$this->provide("injection", $this);
 		}
 		
+		
+		
+		
+		/**
+		 * undocumented function
+		 *
+		 * @param string $key 
+		 * @param string $val 
+		 * @return void
+		 * @author Christian Blaschke
+		 */
+		public function provideProvider($key, $val) {
+			$instance = null;
+			if( is_string($val) ) {
+				
+				if( class_exists($val) ) {
+					$instance = $this->invokeClass($val);
+				} else if( is_callable($val) ) {
+					$instance = $this->invokeClosure($val);
+				}
+				
+			} else if(is_callable($val)) {
+				$instance = $this->invokeClosure($val);
+			}
+			
+			
+			
+			return $this->provide($key, $instance);
+			
+		}
+		
+		
+		
+		/**
+		 * undocumented function
+		 *
+		 * @param string $key 
+		 * @param string $val 
+		 * @return void
+		 * @author Christian Blaschke
+		 */
+		public function provideService($key, $val) {
+			if( is_string($val) ) {
+				
+				if( class_exists($val) ) {
+					$service = $this->invokeClass($val);
+				} else if( is_callable($val) ) {
+					$service = $this->invokeClosure($val);
+				}
+				
+			} else if( is_callable($val) ) {
+				$service = $this->invokeClosure($val);
+			}
+			
+			return $this->provideValue($key, $service);
+		}
+
+
 
 		/** 
 		 * Creates a new provider which returns the $val-param as its' service.
@@ -55,95 +115,30 @@
 		 * @return void
 		 * @author Christian Blaschke
 		 */
-		public function provideFactory($key, $closure) {
+		public function provideFactory($key, $val) {
+			
+			
+			if( is_string($val) ) {
+				if( class_exists($val) ) {
+					$closure = function()use($val) {
+						return $this->invokeClass($val);
+					};
+				} else if( is_callable($val) ) {
+					$closure = function()use($val) {
+						return $this->invokeClosure($val);
+					};
+				}
+			} else if( is_callable($val) ) {
+				$closure = $val;
+			}
+			
+			
 			$provider = $this->invokeClass("nrns\\provider\\factoryProvider");
+			
 			$provider->setClosure($closure);
 			
 			$this->provide($key, $provider);
 			return $provider;
-		}
-
-
-
-		/**
-		 * Creates a new provider which returns the $closure-param as its' service.
-		 * The Provider is also stored into providerStore with the $key-param
-		 *
-		 * @param string $key 
-		 * @param string $closure 
-		 * @return void
-		 * @author Christian Blaschke
-		 */
-		public function provideClosure($key, $closure) {
-			return $this->provideValue($key, nrns::closure($closure));
-		}
-
-
-
-		/**
-		 * Creates a new provider which returns the $instance-param as its' service.
-		 * The Provider is also stored into providerStore with the $key-param
-		 *
-		 * @param string $key 
-		 * @param string $instance 
-		 * @return void
-		 * @author Christian Blaschke
-		 */
-		public function provideInstance($key, $instance) {
-			return $this->provideValue($key, $instance);
-		}
-
-
-
-		/**
-		 * Creates a new provider which returns the invoked class ($classname-param) as its' service.
-		 * The Provider is also stored into providerStore with the $key-param
-		 *
-		 * @param string $key
-		 * @param string $classname
-		 * @return provider
-		 * @author Christian Blaschke
-		 */
-		public function provideClass($key, $classname) {
-			return $this->provideFactory($key, function($injection)use($classname){
-				return $injection->invokeClass($classname);
-			});
-		}
-
-
-
-		/**
-		 * Creates a new Provider which returns an permanent instance of $classname as its' service.
-		 * The Provider is also stored into providerStore with the $key-param
-		 *
-		 * @param string $key
-		 * @param string $classname
-		 * @return provider
-		 * @author Christian Blaschke
-		 */
-		public function provideClassInstance($key, $classname) {
-			return $this->provideValue($key, $this->invokeClass($classname));
-		}
-
-
-
-		/**
-		 * Creates a new provider-instance of a provider-class and provides it.
-		 *
-		 * @param string $key
-		 * @param string $providerClassname 
-		 * @return void
-		 * @author Christian Blaschke
-		 */
-		public function provideProviderClass($key, $providerClassname) {
-			
-			if( class_exists($providerClassname) AND is_subclass_of($providerClassname, "\\nrns\\provider\\provider") ) {
-				$provider = $this->invokeClass($providerClassname);
-				$this->provide($key, $provider);
-				
-				return $provider;
-
-			}	
 		}
 
 
@@ -158,15 +153,30 @@
 		 * @author Christian Blaschke
 		 */
 		public function provide($name, $providerInstance) {
-			$name = $this->santizeProviderName($name);
 			
-			$this->store->set($name, $providerInstance);
+			if( is_object($providerInstance) ) {
+				if(is_subclass_of($providerInstance, "nrns\\provider\\provider")) {
+					
+					$name = $this->santizeProviderName($name);
+			
+					$this->store->set($name, $providerInstance);
 			
 			
-			/* Call init method if exists on providerInstance */
-			if(method_exists($providerInstance, "init")) {
-				$this->invokeMethod($providerInstance, "init");
+					/* Call init method if exists on providerInstance */
+					if(method_exists($providerInstance, "init")) {
+						$this->invokeMethod($providerInstance, "init");
+					}
+					return $providerInstance;
+					
+				} else {
+					throw new \Exception("Instance of <b>$key</b> has to be a subclass of nrns\\provider");
+				}
+			} else {
+				return false;
 			}
+			
+			
+			
 		}
 
 
@@ -198,7 +208,7 @@
 		 * @return void
 		 * @author Christian Blaschke
 		 */
-		private function getProvider($name) {
+		public function getProvider($name) {
 			$name = $this->santizeProviderName($name);
 			
 			
@@ -208,11 +218,12 @@
 				
 			} else {
 			// Otherwise try to instanciate the provider from a provider-class automatically
-
-				if( $provider = $this->provideProviderClass($name, '\\nrns\\provider\\'.$name) ) {
+			
+				if( $provider = $this->provideProvider($name, '\\nrns\\provider\\'.$name) ) {
 					return $provider;
 				} else {
-					throw new \Exception("UNABLE TO INSTANCIATE PROVIDER! [$name]");
+					
+					throw new \Exception("Unable to instanciate provider [$name]");
 				}
 			}
 		}
@@ -240,7 +251,10 @@
 				
 				if(strtolower($dep) == "scope") {
 					if($scope==null) {
-						$scope = $this->getProvider("app")->getService()->createScope();
+						
+						$scope = $this->invokeClass("nrns\\scope");
+						
+						//$scope = $this->getProvider("app")->getService()->createScope();
 					}
 					$result[] = $scope;
 				

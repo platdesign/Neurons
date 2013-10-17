@@ -22,9 +22,12 @@ trait events {
 			$this->trigger("before:".$name);
 		}
 		
-		foreach($this->events__listener[$prefix.$name] as $closure) {
-			call_user_func($closure);
+		if( isset($this->events__listener[$prefix.$name]) ) {
+			foreach($this->events__listener[$prefix.$name] as $closure) {
+				call_user_func($closure);
+			}
 		}
+		
 
 		if(!$prefix) {
 			$this->trigger("after:".$name);

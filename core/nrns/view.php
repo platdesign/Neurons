@@ -7,10 +7,9 @@ class view {
 	private $subview;
 	
 	
-	public function __construct($scope, $injection, $app){
+	public function __construct($scope, $injection){
 		$this->setScope($scope);
 		$this->injection 	= $injection;
-		$this->app = $app;
 	}
 	
 	public function addSubview($view) {
@@ -31,17 +30,16 @@ class view {
 	}
 	
 	public function setTemplateUrl($url) {
-		if(substr($url, 0, 2) == "./") { $url = $this->app->__rootpath."/".$url; }
+		if(substr($url, 0, 2) == "./") { $url = \nrns::$rootpath."/".$url; }
 		
 		
 		
-		$this->setTemplateClosure(function($app, $injection, $request, $route, $output, $client, $scope)use($url){
+		$this->setTemplateClosure(function($injection, $request, $route, $output, $client, $scope)use($url){
 			
 			return \nrns::loadTemplateContent($url, [
 				"scope"		=>	$scope, 
 				"route"		=>	$route, 
 				"client"	=>	$client,
-				"app"		=>	$app, 
 				"injector"	=>	$injection,
 				"injection"	=>	$injection,
 				"request"	=>	$request,
@@ -62,7 +60,6 @@ class view {
 	
 	public function render() {
 		try {
-			//$this->scope->subview = $this->subview;
 		
 			if( isset($this->templateClosure) ) {
 				$this->body = $this->injection->invokeClosure($this->templateClosure, $this->scope);
