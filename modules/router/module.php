@@ -5,7 +5,7 @@
 	
 	require "routeProvider.php";
 
-	$module = nrns::module("router", []);
+	$module = nrns::module("router", ['nrns']);
 	
 	$module->provider("routeProvider", "nrns\\routeProvider");
 	
