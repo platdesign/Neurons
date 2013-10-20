@@ -7,10 +7,11 @@
 	class autopagesProvider extends nrns\provider\provider {
 		
 		
-		public function __construct($injection, $uiRouteProvider, $nrns) {
+		public function __construct($injection, $uiRouteProvider, $nrns, $fs) {
 			$this->injection = $injection;
 			$this->uiRouteProvider = $uiRouteProvider;
 			$this->nrns = $nrns;
+			$this->fs = $fs;
 		}
 		
 		public function scanDir($dir, $startWith=null) {

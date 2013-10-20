@@ -10,7 +10,7 @@ namespace nrns\provider\outputProvider;
 		public function __construct($request) {  
 			$this->__setStructur();
 			
-			$this->setBase($request->base);
+			$this->setBase($request->getBase());
 		}
 		
 		private function __setStructur() {

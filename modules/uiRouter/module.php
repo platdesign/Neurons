@@ -3,7 +3,7 @@
 	namespace uiRouter;
 	use nrns;
 	
-	$module = nrns::module("uiRouter", ["nrns"]);
+	$module = nrns::module("uiRouter", ["nrns", "router"]);
 	
 	require "segment.php";
 	require "uiRouteProvider.php";

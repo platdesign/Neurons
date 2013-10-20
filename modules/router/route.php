@@ -10,7 +10,7 @@ class route {
 	private $method, $options = [], $controller;
 	public $route, $params = [], $parenRoute, $childRoute;
 	
-	private $routeParamRegEx = "#:([\w]+)\+?#";
+	private $routeParamRegEx = "#:([\w.-]+)\+?#";
 	
 	public function __construct($nrns, $request, $output, $injection, $routeProvider, $scope) {
 
@@ -115,13 +115,15 @@ class route {
 	}
 	
 	public function matchesWith($route) {
-		$pattern = preg_replace($this->routeParamRegEx, "([\w]+)", $this->route);
+		$pattern = preg_replace($this->routeParamRegEx, "([\w.-]+)", $this->route);
 		
         if (preg_match('#^/?' . $pattern . '/?$#', $route, $matches)) {
 			unset($matches[0]);
 			
 			$this->setParams($matches);
 			$this->setRoute($route);
+			
+			
             return true;
         }
 		

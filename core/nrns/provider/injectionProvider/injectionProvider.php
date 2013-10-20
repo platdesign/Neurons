@@ -249,7 +249,7 @@
 			
 			foreach($deps as $dep) {
 				
-				if(strtolower($dep) == "scope") {
+				if($dep === "scope") {
 					if($scope==null) {
 						
 						$scope = $this->invokeClass("nrns\\scope");

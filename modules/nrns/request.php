@@ -8,65 +8,148 @@
 	
 	
 	class request {
-		public function __construct() {
-			$this->server 		= $_SERVER;
 		
-			$this->url 			= $this->getUrl();
-			$this->parsedUrl 	= parse_url($this->url);
-			$this->method 		= $this->server['REQUEST_METHOD'];
-			$this->route 		= $this->getRoute();
-			$this->base 		= $this->getBase();
-			
 		
-		}
-
-		private function removeTrailingSlash($uri) {
-			return rtrim($uri, "/");
-		}
-
-		public function getBody() {
-			return file_get_contents('php://input');
-		}
+		use methodcache;
 	
-		private function getUrl() {
-			$scheme = (!empty($this->server['HTTPS'])) ? "https" : "http";
-		
-			$url = $scheme."://".$this->server['SERVER_NAME'].$this->server['REQUEST_URI'];
-			return $url;
-		}
-	
-		private function getRoute() {
+		/**
+		 * Returns the request-route based on the route-path
+		 *
+		 * @example /route/to
+		 * @return void
+		 * @author Christian Blaschke
+		 */
+		public function cached_getRoute() {
 			
-			
-			
-			$scriptpath = dirname($this->server['SCRIPT_NAME']);
-			$urlpath = $this->parsedUrl['path'];
-			
-
+			$scriptpath = $this->getScriptPath();
+			$urlpath = $this->getPath();
 			
 			if(stripos($urlpath, $scriptpath) == 0) {
-				$length = strlen($scriptpath);
-				$route = substr($urlpath, $length);
+				$route = substr($urlpath, strlen($scriptpath));
 			}
-			if(substr($route, 0, 1)!="/") {$route = "/".$route;}
+			if($route[0] != "/") { $route = "/".$route; }
 			
 			return $route;
 		}
 
-		private function getBase() {
-			return rtrim($this->parsedUrl['scheme']."://".$this->parsedUrl['host'].dirname($this->server['SCRIPT_NAME']), "/");
+
+
+		/**
+		 * Returns the request-path
+		 *
+		 * @example The path of http://www.example.com/path/A/?a=123 is /path
+		 * @return void
+		 * @author Christian Blaschke
+		 */
+		public function cached_getPath() {
+			$url = $this->getUrl();
+			$parsed = parse_url($url);
+			
+			return $parsed['path'];
+		}
+
+
+
+		/**
+		 * Returns the base Url
+		 *
+		 * @example http://example.com
+		 * @return string
+		 * @author Christian Blaschke
+		 */
+		public function cached_getBase() {
+			$fullUrl 	= $this->getUrl();
+			$scriptpath = $this->getScriptPath();
+			return rtrim(substr($fullUrl, 0, strpos($fullUrl, $scriptpath)).$scriptpath, "/");
 		}
 	
+	
+		/**
+		 * Returns the scriptpath
+		 *
+		 * @return string
+		 * @author Christian Blaschke
+		 */
+		public function cached_getScriptPath() {
+			return dirname($_SERVER['SCRIPT_NAME']);
+		}
+	
+		/**
+		 * Returns the request-protocol
+		 *
+		 * @example http | https
+		 * @return string
+		 * @author Christian Blaschke
+		 */
+		public function cached_getProtocol() {
+			return (!empty($_SERVER['HTTPS'])) ? "https" : "http";
+		}
+	
+	
+		
+		/**
+		 * Returns the request-method
+		 *
+		 * @example GET | POST | PUT | DELETE
+		 * @return string
+		 * @author Christian Blaschke
+		 */
+		public function cached_getMethod(){
+			return strtoupper($_SERVER['REQUEST_METHOD']);
+		}
+		
+		
+		
+		/**
+		 * Returns the full request-url
+		 *
+		 * @example http://sub.example.com/dir/file.php?a=123
+		 * @return void
+		 * @author Christian Blaschke
+		 */
+		public function cached_getUrl() {
+			return $this->getProtocol()."://".$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'];
+		}
+	
+	
+	
+		/**
+		 * Returns the request-body
+		 *
+		 * @return string
+		 * @author Christian Blaschke
+		 */
+		public function cached_getBody() {
+			return file_get_contents('php://input');
+		}
+
+
+
+		/**
+		 * Redirects to an url
+		 *
+		 * @param string $url 
+		 * @return void
+		 * @author Christian Blaschke
+		 */
 		public function redirect($url) {
-			if($url != $this->url) {
-				
+			if($url != $this->getUrl()) {
 				header("Location: ".$url);
 				die();
 			}
 		}
 	
+	
+	
+		/**
+		 * Redirects to a route
+		 *
+		 * @param string $route 
+		 * @return void
+		 * @author Christian Blaschke
+		 */
 		public function redirectRoute($route) {
-			$this->redirect($this->parsedUrl['scheme']."://".dirname($this->server['SERVER_NAME'].$this->server['SCRIPT_NAME']) . $route);
+			$this->redirect($this->getBase().$route);
 		}
 	}
 	

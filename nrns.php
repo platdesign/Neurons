@@ -25,7 +25,6 @@
 			1 		=> 'E_ERROR'
 		];
 		
-		
 		$error = (object) [
 			"level"		=> 	$level,
 			"type"		=>	$levels[$level],
@@ -206,8 +205,11 @@
 		}
 	
 		public static function displaySysError($error) {
-			echo '<div style="border:1px solid red; margin: 20px; padding: 20px;border-radius: 3px; line-height: 1.4em; font-family: courier; font-size: .9em;"><b>NRNS-Error!</b><hr>'.$error.'</div>';
-			die();
+			if(self::$devMode) {
+				echo '<div style="border:1px solid red; margin: 20px; padding: 20px;border-radius: 3px; line-height: 1.4em; font-family: courier; font-size: .9em;"><b>NRNS-Error!</b><hr>'.$error.'</div>';
+				die();
+			}
+			
 		}
 	
 		

@@ -73,8 +73,8 @@
 
 		
 		private function findRoute() {
-			$method = $this->request->method;
-			$route 	= $this->request->route;
+			$method = $this->request->getMethod();
+			$route 	= $this->request->getRoute();
 			
 			if( $all = $this->findRouteObject("ALL", $route) ) {
 				return $all;
@@ -159,13 +159,14 @@
 					RewriteRule ^ index.php [QSA,L]
 				');
 				
-				
-				
-				// try to create .htaccess-File
-				
-				if( !file_put_contents($htaccessFile, $htaccessContent) ) {
+				if( is_writable($htaccessFile) ) {
+					file_put_contents($htaccessFile, $htaccessContent);
+				} else {
 					\nrns::displaySysError("Create .htaccess-File at <br><pre>".$htaccessFile."</pre> with following Content<hr><pre>".$htaccessContent."</pre>");
+					
 				}
+				
+				
 				
 			}
 			
