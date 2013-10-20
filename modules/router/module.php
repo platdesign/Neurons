@@ -1,13 +1,13 @@
 <?PHP
 
-	namespace nrns;
+	namespace router;
 	use nrns;
 	
 	require "routeProvider.php";
 
 	$module = nrns::module("router", ['nrns']);
 	
-	$module->provider("routeProvider", "nrns\\routeProvider");
+	$module->provider("routeProvider", "router\\routeProvider");
 	
 	
 	

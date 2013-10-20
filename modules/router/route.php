@@ -1,6 +1,6 @@
 <?PHP
 
-namespace nrns\provider\routeProvider;
+namespace router;
 use nrns;
 
 class route {

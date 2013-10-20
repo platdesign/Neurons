@@ -8,7 +8,7 @@
 	class uiRouteProvider extends nrns\provider\provider {
 		
 		// Load routeSetter-methods (when, get, put, post, delete)
-		use nrns\provider\routeProvider\routeSetter;
+		use \router\routeSetter;
 		
 		public function __construct($injection, $routeProvider) {
 			$this->injection = $injection;

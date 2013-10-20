@@ -1,6 +1,6 @@
 <?PHP 
 	
-	namespace nrns;
+	namespace router;
 	use nrns;
 	
 	require "routeSetter.php";
@@ -10,7 +10,7 @@
 	class routeProvider extends nrns\provider\provider {
 		
 		// Load routeSetter-methods (when, get, put, post, delete)
-		use nrns\provider\routeProvider\routeSetter;
+		use routeSetter;
 		
 		
 		private $routes = ["ALL"=>[], "GET"=>[], "POST"=>[], "PUT"=>[], "DELETE"=>[]];
@@ -18,7 +18,7 @@
 		private $activeRoute;
 		private $otherwiseRoute;
 		
-		private $routeClassname = "nrns\\provider\\routeProvider\\route";
+		private $routeClassname = 'router\route';
 		
 		
 		
