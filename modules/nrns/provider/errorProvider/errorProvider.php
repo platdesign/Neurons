@@ -12,7 +12,7 @@
 		public function __construct($nrns) {
 			$this->nrns = $nrns;
 			
-			$this->nrns->on("before:close", function(){
+			$this->nrns->on("shutdown", function(){
 				$this->trigger("log");
 			});
 			

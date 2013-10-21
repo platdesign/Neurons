@@ -11,6 +11,7 @@ trait events {
 	}
 	
 	public function trigger($name) {
+		
 		$prefix = null;
 		
 		if( strpos($name, ":") ) {

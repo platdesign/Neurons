@@ -22,7 +22,7 @@ use nrns;
 			
 			$this->setType($this->type);
 			
-			$nrns->on("close", function(){
+			$nrns->on("render", function(){
 				$this->render();
 			});
 			

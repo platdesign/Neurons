@@ -12,7 +12,7 @@ class module {
 	}
 	
 	public function config($closure) {
-		$this->nrns->on("before:start", function()use($closure){
+		$this->nrns->on("config", function()use($closure){
 			\nrns::injectionProvider()->invokeClosure($closure);
 		});
 	}

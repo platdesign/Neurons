@@ -37,7 +37,7 @@
 				
 		
 			// Add event to the app which executes the active route on app-start
-			$this->nrns->on("start", function(){
+			$this->nrns->on("after:config", function(){
 				$this->activeRoute = $this->findRoute();
 				
 				if( method_exists($this->activeRoute, "call") ) {

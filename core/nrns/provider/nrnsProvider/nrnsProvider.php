@@ -10,9 +10,10 @@
 		}
 	
 		public function run() {
-			$this->trigger("start");
+			$this->trigger("init");
+			$this->trigger("config");
 			$this->trigger("run");
-			$this->trigger("close");
+			$this->trigger("render");
 			$this->trigger("shutdown");
 		}
 		
