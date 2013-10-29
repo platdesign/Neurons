@@ -15,7 +15,7 @@
 		 * @author Christian Blaschke
 		 */
 		public function __construct() {
-			$this->browser = get_browser();
+			//$this->browser = get_browser();
 		}
 	
 	

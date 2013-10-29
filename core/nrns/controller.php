@@ -6,9 +6,10 @@ class controller {
 	
 	private $onCall;
 	
-	public function __construct($injection, $scope){
+	public function __construct($injection, $scope, $nrns){
 		$this->scope = $scope;
 		$this->injection = $injection;
+		$this->nrns = $nrns;
 		
 		$this->onCall = function(){};
 	}
@@ -22,6 +23,9 @@ class controller {
 	}
 	
 	public function setFile($filename) {
+		
+		$filename = $this->nrns->sanitizeRootPath($filename);
+		
 		if( file_exists($filename) ) {
 			$closure = include $filename;
 			$this->setClosure($closure);

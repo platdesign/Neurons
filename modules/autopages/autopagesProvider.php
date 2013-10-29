@@ -7,71 +7,71 @@
 	class autopagesProvider extends nrns\provider\provider {
 		
 		
-		public function __construct($injection, $uiRouteProvider, $nrns, $fs) {
+		public function __construct($injection, $segmentProvider, $nrns, $fs) {
 			$this->injection = $injection;
-			$this->uiRouteProvider = $uiRouteProvider;
+			$this->segmentProvider = $segmentProvider;
 			$this->nrns = $nrns;
 			$this->fs = $fs;
+			
 		}
 		
-		public function scanDir($dir, $startWith=null) {
-			$dir = nrns::$rootpath.DIRECTORY_SEPARATOR.$dir;
+		public function scanDir($path) {
 			
-			if( is_dir($dir) ) {
+			
+			if( $dir = $this->fs->find($path) ) {
 				
-				$segment = $this->uiRouteProvider->segment(basename($dir), [])->within();
+				$segment = $this->segmentProvider->segment($dir->getName(), []);
 				
 				$this->registerDir("/", $dir, $segment);
 				
 			}
 			
 			
-			if($startWith) {
-				$this->uiRouteProvider->otherwise(["redirect"=>$startWith]);
-			}
+			
 			
 		}
 		
 		
 		public function registerDir($route, $dir, $parentSegment) {
+			$options = [];
+			
 			
 			if($route!="/") {
-				$this->uiRouteProvider->when($route, $parentSegment->getChain());
+				$this->segmentProvider->when($route, $this->segmentProvider->getChainOfSegment($parentSegment));
 			} else {
 				$route = NULL;
 			}
 			
 			
-			if( file_exists($dir."/template.php") ) {
-				$options["templateUrl"] = $dir."/template.php";
+			if( $template = $dir->find("template.php") ) {
+				$options["templateUrl"] = $template->getPathname();
 			}
-			if( file_exists($dir."/controller.php") ) {
-				$options["controllerUrl"] = $dir."/controller.php";
+			if( $controller = $dir->find("controller.php") ) {
+				$options["controllerUrl"] = $controller->getPathname();
 			}
+
 			
 			$parentSegment->setOptions($options);
 			
-			foreach (new \DirectoryIterator($dir) as $file) {
-			    if($file->isDot()) continue;
-
-			    if($file->isDir()) {
-					if( substr($file, 0, 1) != "!") {
+			foreach ($dir->dirs() as $file) {
+				
+					if( substr($file->getName(), 0, 1) != "!") {
 					
 					
-						if( substr($file, 0, 2) == "__" ) {
-							$routeExtender = "/:".substr($file, 2);
+						if( substr($file->getName(), 0, 2) == "__" ) {
+							$routeExtender = "/:".substr($file->getName(), 2);
 						} else {
-							$routeExtender = "/".$file;
+							$routeExtender = "/".$file->getName();
 						}
 					
-					
+						
 						$this->registerDir(
 							$route.$routeExtender, 
-							$file->getPathname(), 
-							$parentSegment->segment($file, [])->within()
+							$file,
+							$parentSegment->segment($file->getName(), [])
 						);
 					}
-			    }
+			    
 				
 			}
 			

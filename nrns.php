@@ -11,7 +11,8 @@
 	set_error_handler(function($level, $message, $file, $line, $context){
 		
 		$levels =[
-			2047 	=> 'E_ALL',
+			4096 	=> 'E_ALL',
+			2048 	=> 'E_ALL',
 			1024 	=> 'E_USER_NOTICE',
 			512 	=> 'E_USER_WARNING',
 			256 	=> 'E_USER_ERROR',
@@ -252,6 +253,18 @@
 		
 		
 		
+		
+		
+		
+		
+		
+		public static function view($scope=null) {
+			return nrns::invoke("nrns\\view", $scope);
+		}
+		
+		public static function controller($scope=null) {
+			return nrns::invoke("nrns\\controller", $scope);
+		}
 		
 		
 		

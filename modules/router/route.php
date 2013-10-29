@@ -12,12 +12,11 @@ class route {
 	
 	private $routeParamRegEx = "#:([\w.-]+)\+?#";
 	
-	public function __construct($nrns, $request, $output, $injection, $routeProvider, $scope) {
+	public function __construct($nrns, $request, $injection, $routeProvider, $scope) {
 
 		$this->injection 		= $injection;
 		$this->routeProvider 	= $routeProvider;
 		$this->request			= $request;
-		$this->output			= $output;
 		$this->scope 			= $scope;
 		
 		$this->params	= (object) [];
@@ -42,61 +41,19 @@ class route {
 	
 	
 	public function call() {
-		$this->options2controller();
+		if( is_callable($this->options) ) {
+			$this->controller->setClosure($this->options);
+		}
 		return $this->controller->call();
 	}
 	
-	private function options2controller() {
-		
-		if(is_array($this->options)) {
-			
-			$view = $this->injection->invokeClass("nrns\\view", $this->scope);
-			$ctrl = $this->injection->invokeClass("nrns\\controller", $this->scope);
-			
-			foreach($this->options as $key => $options) {
-				switch($key) {
-					
-						case "templateUrl":
-							$view->setTemplateUrl($options);
-						break;
-				
-						case "view":
-							$view->setTemplateClosure($options);
-						break;
-				
-						case "controller":
-							if(is_callable($options)) {
-								$ctrl->setClosure($options);
-							}
-						break;
-				
-						case "controllerUrl":
-							if(file_exists($options)) {
-								$ctrl->setFile($options);
-							}
-						break;
-					
-						case "redirect":
-							$ctrl->setClosure(function($request)use($options){
-								$request->redirectRoute(str_replace("//", "/", $options));
-							});
-						break;
-					
-				}
-			}
 
-			$this->controller->setClosure(function($output)use($view, $ctrl){
-				$ctrl->call();
-				$output->setBody( $view );
-			});
 
-		} elseif( is_callable($this->options) ) {
-			$this->controller->setClosure($this->options);
-		}
-		
-		
-	}
-
+	
+	
+	
+	
+	
 	
 	
 	

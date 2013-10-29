@@ -5,15 +5,8 @@
 	
 	require "fs/fsProvider.php";
 
-	$module = nrns::module("fs", []);
-	
-	$module->config(function($nrns, $fsProvider){
-		$fsProvider->setRootPath($nrns->getRootpath());
-	});
-	
+	$module = nrns::module("fs", ['nrns']);
+
 	$module->provider("fsProvider", "nrns\\fsProvider");
 	
-	
-	
-
 ?>

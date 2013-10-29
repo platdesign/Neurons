@@ -147,7 +147,7 @@
 		 */
 		public function cached_dirs() {
 			
-			return $this->_itemsFilterSort(function($item)use($ext){
+			return $this->_itemsFilterSort(function($item){
 				
 				if( $item->isDir() ) {
 					return true;

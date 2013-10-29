@@ -11,8 +11,8 @@ class fsProvider extends nrns\provider\provider {
 	
 	private $rootDir;
 	
-	function __construct(){
-
+	function __construct($nrns){
+		$this->setRootPath($nrns->getRootpath());
 	}
 	
 	public function setRootPath($path) {

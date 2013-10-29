@@ -28,6 +28,16 @@
 		public function devMode() {
 			return nrns::$devMode;
 		}
+		
+		public function sanitizeRootPath($filename) {
+			$firstChar = substr($filename, 0, 1);
+			
+			if( $firstChar == '/' ){
+				return $filename;
+			} else if( $firstChar === '.') {
+				return $this->getRootpath().'/'.$filename;
+			}
+		}
 	}
 	
 	
