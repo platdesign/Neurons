@@ -18,16 +18,13 @@
 		public function scanDir($path) {
 			
 			
-			if( $dir = $this->fs->find($path) ) {
+				if( $dir = $this->fs->find($path) ) {
 				
-				$segment = $this->segmentProvider->segment($dir->getName(), []);
+					$segment = $this->segmentProvider->segment($dir->getName(), []);
 				
-				$this->registerDir("/", $dir, $segment);
+					$this->registerDir("/", $dir, $segment);
 				
-			}
-			
-			
-			
+				}
 			
 		}
 		
