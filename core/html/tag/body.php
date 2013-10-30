@@ -1,9 +1,9 @@
 <?PHP
 
 namespace html\tag;
-use html;
+
 	
-	class body extends html\tag {
+	class body extends \html\tag {
 	
 		public $name = 'body';
 		public $js = [];

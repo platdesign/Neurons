@@ -1,9 +1,9 @@
 <?PHP
 
 namespace html\tag;
-use html;
+
 	
-	class head extends html\tag {
+	class head extends \html\tag {
 	
 		use ogSetter;
 		
@@ -196,7 +196,7 @@ use html;
 			
 			/* Append Content with meta-tags */
 			foreach(array_values($this->meta) as $meta) {
-				$this->append( html::meta($meta) );
+				$this->append( \html::meta($meta) );
 			}
 			
 			/* Append Content with Title if is set */
@@ -206,12 +206,12 @@ use html;
 			
 			/* Append Content with js-scripts */
 			foreach(array_unique($this->js) as $url) {
-				$this->append( html::js($url) );
+				$this->append( \html::js($url) );
 			}
 			
 			/* Append Content with css-scripts */
 			foreach(array_unique($this->css) as $url) {
-				$this->append( html::css($url) );
+				$this->append( \html::css($url) );
 			}
 			
 			
