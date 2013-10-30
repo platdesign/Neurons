@@ -14,7 +14,7 @@
 	
 	class cacheProvider extends nrns\provider\provider {
 		
-		private $duration = 10;
+		private $duration = 3600;
 		private $path;
 		
 		public function __construct($nrns, $routeProvider, $fs, $response) {
