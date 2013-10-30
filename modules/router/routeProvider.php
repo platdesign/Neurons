@@ -35,12 +35,13 @@
 			// Create empty route for otherwise and set an emtpy controller
 			$this->otherwiseRoute = $this->injection->invokeClass($this->routeClassname);
 				
+			$this->nrns->on('after:config', function(){
+				$this->activeRoute = $this->findRoute();
+			});
 		
 			// Add event to the app which executes the active route on app-start
-			$this->nrns->on("after:config", function(){
-				$this->activeRoute = $this->findRoute();
-				
-				if( method_exists($this->activeRoute, "call") ) {
+			$this->nrns->on('run', function(){
+				if( method_exists($this->activeRoute, 'call') ) {
 					$this->activeRoute->call();
 				}
 			});
