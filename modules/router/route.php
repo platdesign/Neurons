@@ -5,10 +5,10 @@ use nrns;
 
 class route {
 	
-	
+	use nrns\events;
 	
 	private $method, $options = [], $controller;
-	public $route, $params = [], $parenRoute, $childRoute;
+	public $_route, $route, $params = [], $parenRoute, $childRoute;
 	
 	private $routeParamRegEx = "#:([\w.-]+)\+?#";
 	
@@ -30,7 +30,7 @@ class route {
 	}
 	
 	public function setRoute($route) {
-		$this->route = $route;
+		$this->_route = $route;
 	}
 	
 	public function setOptions($options) {
@@ -41,6 +41,7 @@ class route {
 	
 	
 	public function call() {
+		$this->trigger('call');
 		if( is_callable($this->options) ) {
 			$this->controller->setClosure($this->options);
 		}
@@ -63,7 +64,7 @@ class route {
 	}
 	
 	private function getKeys() {
-		preg_match_all($this->routeParamRegEx, $this->route, $matches);
+		preg_match_all($this->routeParamRegEx, $this->_route, $matches);
 		$result = [];
 		foreach($matches[0] as $key) {
 			$result[] = substr($key, 1);
@@ -72,13 +73,13 @@ class route {
 	}
 	
 	public function matchesWith($route) {
-		$pattern = preg_replace($this->routeParamRegEx, "([\w.-]+)", $this->route);
+		$pattern = preg_replace($this->routeParamRegEx, "([\w.-]+)", $this->_route);
 		
         if (preg_match('#^/?' . $pattern . '/?$#', $route, $matches)) {
 			unset($matches[0]);
 			
 			$this->setParams($matches);
-			$this->setRoute($route);
+			$this->route = $route;
 			
 			
             return true;
@@ -86,6 +87,10 @@ class route {
 		
 	}
 	
+	
+	public function __tostring() {
+		return $this->route;
+	}
 }
 
 ?>
