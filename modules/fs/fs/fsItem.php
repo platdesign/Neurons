@@ -51,6 +51,9 @@ trait fsItem {
 	
 	
 	
+	public function isWriteable() {
+		return is_writable($this);
+	}
 	
 }
 
