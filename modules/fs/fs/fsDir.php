@@ -227,6 +227,41 @@
 	
 	
 	
+		/**
+		 * Creates a new File with Content
+		 *
+		 * @param string $filename 
+		 * @param string $content 
+		 * @return fsFile
+		 * @author Christian Blaschke
+		 */
+		public function createFile($filename, $content=null) {
+			
+			$file = $this->getPathname().DIRECTORY_SEPARATOR.$filename;
+			
+			file_put_contents($file, $content);
+			return $this->find($filename);
+		}
+		
+		
+		
+		/**
+		 * Creates a new Dir
+		 *
+		 * @param string $filename 
+		 * @return fsDir
+		 * @author Christian Blaschke
+		 */
+		public function createDir($filename) {
+			$dirpath = $this->getPathname().DIRECTORY_SEPARATOR.$filename;
+			
+			mkdir($dirpath, 0777, true);
+			return $this->find($filename);
+		}
+		
+		
+		
+		
 	}
 
 ?>
