@@ -39,6 +39,10 @@ class fsFile extends \splFileInfo {
 	public function parseAs($type) {
 		switch(strtolower($type)) {
 			
+			case "html":
+				return file_get_contents($this);
+			break;
+			
 			case "json":
 				return json_decode(file_get_contents($this));
 			break;
