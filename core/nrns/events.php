@@ -35,5 +35,11 @@ trait events {
 		}
 		
 	}
+	
+	public function clearEvent($name) {
+		unset($this->events__listener['before:'.$name]);
+		unset($this->events__listener[$name]);
+		unset($this->events__listener['after:'.$name]);
+	}
 }
 ?>
