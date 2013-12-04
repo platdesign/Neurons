@@ -1,0 +1,12 @@
+{
+    "name": "neurons/neurons",
+    "authors": [
+        {
+            "name": "Christian Blaschke",
+            "email": "mail@platdesign.de"
+        }
+    ],
+    "require": {
+
+    }
+}
