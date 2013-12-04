@@ -6,8 +6,10 @@
 	require "provider/client.php";
 	require "provider/request.php";
 	require "provider/errorProvider.php";
-	
 	require "provider/responseProvider.php";
+
+	require "provider/cookie.php";
+	
 
 	$module = nrns::module("nrns", []);
 	
@@ -19,7 +21,9 @@
 	$module->provider("responseProvider", "nrns\\responseProvider");
 	
 	
-	
+	$module->service("cookie", function(){
+		return new cookie();
+	});
 	
 
 ?>

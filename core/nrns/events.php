@@ -8,6 +8,7 @@ trait events {
 	
 	public function on($key, $closure) {
 		$this->events__listener[$key][] = $closure;
+		return $this;
 	}
 	
 	public function trigger($name) {
@@ -24,8 +25,11 @@ trait events {
 		}
 		
 		if( isset($this->events__listener[$prefix.$name]) ) {
+			
+			$args = array_slice(func_get_args(), 1, 1);
+			
 			foreach($this->events__listener[$prefix.$name] as $closure) {
-				call_user_func($closure);
+				call_user_func_array($closure, $args);
 			}
 		}
 		

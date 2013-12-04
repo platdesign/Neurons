@@ -6,6 +6,7 @@
 	define("author", "Christian Blaschke");
 	define("contact", "mail@platdesign.de");
 
+	date_default_timezone_set('UTC');
 	
 	error_reporting(-1);
 	set_error_handler(function($level, $message, $file, $line, $context){
@@ -235,6 +236,11 @@
 		
 			return clone $obj1;
 		
+		}
+	
+	
+		public static function extend() {
+			
 		}
 	
 	

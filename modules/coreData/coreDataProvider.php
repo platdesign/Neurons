@@ -2,6 +2,8 @@
 
 	namespace coreData;
 	use nrns;
+	
+	require_once "dao/mysqlDao.php";
 
 	class coreDataProvider extends nrns\provider\provider {
 		
@@ -10,13 +12,14 @@
 			$this->injection = $injection;
 		}
 		
+		// DEPRECATED
 		public function create($key, $type, $options=[]) {
 			
 			switch($type) {
 				case 'mysql':
-				require_once "dao/mysqlDao.php";
+				
 					$pdo = new \PDO("mysql:host=".$options['host'].";dbname=".$options['db'].";charset=utf8",$options['user'],$options['secret']);
-					
+					$pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 					$dao = new mysqlDao($pdo);
 					
 					$this->injection->provideService($key."PDO", function()use($pdo){
@@ -32,5 +35,25 @@
 			}
 			
 		}
+		
+		
+		public function createMysqlDao($options) {
+			
+			$stdOptions = [
+				"host"	=>	"localhost",
+				"user"	=>	"",
+				"secret"=>	"",
+				"db"	=>	""
+			];
+			
+			$options = array_merge($stdOptions, $options);
+				
+			$pdo = new \PDO("mysql:host=".$options['host'].";dbname=".$options['db'].";charset=utf8",$options['user'],$options['secret']);
+			$pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+			
+			return new mysqlDao($pdo);
+			
+		}
+		
 	}
 ?>

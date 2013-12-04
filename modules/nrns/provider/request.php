@@ -60,7 +60,7 @@
 		public function cached_getBase() {
 			$fullUrl 	= $this->getUrl();
 			$scriptpath = $this->getScriptPath();
-			return rtrim(substr($fullUrl, 0, strpos($fullUrl, $scriptpath)).$scriptpath, "/");
+			return rtrim(substr($fullUrl, 0, strrpos($fullUrl, $scriptpath)).$scriptpath, "/");
 		}
 	
 	

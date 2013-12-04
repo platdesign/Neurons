@@ -42,13 +42,16 @@ class route {
 	
 	public function call() {
 		$this->trigger('call');
+		
+		return $this->getController()->call();
+	}
+	
+	public function getController() {
 		if( is_callable($this->options) ) {
 			$this->controller->setClosure($this->options);
 		}
-		return $this->controller->call();
+		return $this->controller;
 	}
-	
-
 
 	
 	

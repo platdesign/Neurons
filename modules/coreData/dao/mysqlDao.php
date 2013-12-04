@@ -3,6 +3,11 @@
 	namespace coreData;
 	use nrns;
 
+	require "mysql/sqlQuery/sqlQuery.php";
+	require "mysql/sqlEntity/sqlEntity.php";
+	
+
+
 	class mysqlDao {
 		
 		use nrns\methodcache;
@@ -17,13 +22,11 @@
 		/* QUERY FUNCTIONS */
 		public function query($query, $binds=[]){
 			if($this->pdo) {
-			
 				$stmt = $this->pdo->prepare($query);
 				$stmt->execute($binds);
 				return $stmt;
-			
 			} else {
-				throw new \Exception("PDO-Object not found");
+				throw new \PDOException("PDO-Object not found");
 			}
 		}
 		
@@ -73,6 +76,13 @@
 			
 		}
 		
+		
+		public function createEntity($classname = '\sqlEntity') {
+			$ntt = new $classname;
+			$ntt->_setDB($this);
+			return $ntt;
+		}
+		
 	}
 	
 	class mysqlDaoTable {
@@ -90,6 +100,14 @@
 			$this->name = $name;
 			$this->dao = $dao;
 		}
+		
+		public function createEntity($classname = '\sqlEntity') {
+			$ntt = new $classname;
+			$ntt->_setDB($this->dao);
+			$ntt->_setTable($this->name);
+			return $ntt;
+		}
+		
 		
 		private function cached_getPrimaryName() {
 			$query = "SHOW KEYS FROM `$this->name` WHERE Key_name = 'PRIMARY';";
@@ -129,16 +147,77 @@
 			return $this->selectQuery("SELECT * FROM `$this->name`;");
 		}
 		
-		public function get($primary) {
+		
+		
+		private function sanitizeObject($object) {
+			$sql = 'SHOW COLUMNS FROM '.$this->name.';';
+			$fields = $this->dao->selectQuery($sql);
+			$fieldsArray = [];
+			foreach($fields as $field) {
+				$fieldsArray[] = $field->Field;
+			}
+
+			$sanitized = new \stdClass;
+			foreach($fieldsArray as $key) {
+				if(isset($object->{$key})) {
+					$sanitized->{$key} = $object->{$key};
+				}
+			}
+			
+			
+			return $sanitized;
+		}
+		
+		
+		
+		
+		
+		public function get($primary, $classname="stdClass") {
 			$query ='SELECT * FROM `'.$this->name.'` WHERE `'.$this->getPrimaryName().'` = :primary;';
 			$binds["primary"] = $primary;
 			
-			if($result = $this->selectQuery($query, $binds) ) {
+			if($result = $this->selectQuery($query, $binds, $classname) ) {
 				return $result[0];
 			}
 		}
 		
 		
+		public function add($object) {
+			$sanitized = (array)$this->sanitizeObject($object);
+
+			$sql = 'INSERT INTO `'.$this->name.'` 
+				(`'.implode("`,`", array_keys($sanitized)).'`)
+				VALUES
+				(:'.implode(",:", array_keys($sanitized)).')';
+				
+			
+				$id = $this->dao->insertQuery($sql, $sanitized);
+				return $this->get($id);
+			
+		}
+		
+		
+		public function update($id, $object) {
+			$sanitized = (array)$this->sanitizeObject($object);
+			
+			$sql = 'UPDATE `'.$this->name.'` SET ';
+			foreach($sanitized as $key => $val) {
+				$sql .= '`'.$key.'` = :'.$key.', ';
+			}
+			$sql = substr($sql, 0, -2).' WHERE `id` = :id;';
+			
+			$this->dao->updateQuery($sql, array_merge($sanitized, ["id"=>$id]));
+			return $this->get($id);
+		}
+		
+		
+		public function save($object) {
+			if(isset($object->id)) {
+				return $this->update($object->id, $object);
+			} else {
+				return $this->add($object);
+			}
+		}
 		
 	}
 ?>

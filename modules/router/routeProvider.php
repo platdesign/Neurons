@@ -48,7 +48,9 @@
 		}
 		
 		
-		
+		public function getActiveRoute() {
+			return $this->activeRoute;
+		}
 		
 		public function otherwise($then) {
 			$this->otherwiseRoute->setOptions($then);
@@ -87,7 +89,7 @@
 		}
 		
 		
-		private function findRouteObject($method, $route) {
+		public function findRouteObject($method, $route) {
 			
 			$routes = $this->routes[$method];
 

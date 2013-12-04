@@ -11,6 +11,7 @@ use nrns;
 		private $code = 200;
 		private $contentType = 'text/html';
 		private $body;
+		private $_headers = [];
 		
 		public function __construct($nrns, $request) {
 			$this->nrns = $nrns;
@@ -19,7 +20,10 @@ use nrns;
 			$nrns->on("render", function(){
 				
 				
-				header('Content-Type: '.$this->contentType, true, $this->code);
+				foreach($this->_headers as $val) {
+					header($val, true, $this->code);
+				}
+				
 				if($this->body) {
 					echo $this->body;
 				}
@@ -28,7 +32,15 @@ use nrns;
 		}
 		
 		public function setContentType($type) {
-			$this->contentType = $type;
+			$this->addHeader('Content-type: '.$type);
+		}
+		
+		public function forceDownload($filename) {
+			$this->addHeader('Content-disposition: attachment; filename='.$filename);
+		}
+		
+		public function addHeader($content) {
+			$this->_headers[] = $content;
 		}
 		
 		public function setBody($body) {

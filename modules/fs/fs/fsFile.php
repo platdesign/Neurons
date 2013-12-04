@@ -57,6 +57,15 @@ class fsFile extends \splFileInfo {
 	}
 	
 	
+	public function get_contents() {
+		return file_get_contents($this);
+	}
+	
+	public function import() {
+		require $this;
+	}
+	
+	
 	
 	
 }
