@@ -65,7 +65,7 @@
 		 */
 		public function cached_items() {
 			
-			return $this->_itemsFilterSort(function($item)use($ext){
+			return $this->_itemsFilterSort(function($item){
 				
 				return true;
 				
@@ -93,7 +93,7 @@
 		 */
 		public function cached_files() {
 			
-			return $this->_itemsFilterSort(function($item)use($ext){
+			return $this->_itemsFilterSort(function($item){
 				
 				if( $item->isFile() ) {
 					return true;

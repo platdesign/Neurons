@@ -10,11 +10,19 @@ class module {
 		$this->nrns = $nrns;
 		$this->injection = $injection;
 	}
+
+	public function setPath($path) {
+		$this->_path = $path;
+	}
 	
 	public function config($closure) {
 		$this->nrns->on("config", function()use($closure){
 			\nrns::injectionProvider()->invokeClosure($closure);
 		});
+	}
+	
+	public function autoload() {
+		\autoloader::assign( dirname(debug_backtrace()[0]['file']) );
 	}
 	
 	
