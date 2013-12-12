@@ -7,7 +7,7 @@ define('__SCRIPT__', dirname($_SERVER['DOCUMENT_ROOT'].DIRECTORY_SEPARATOR.$_SER
 
 
 
-
+require 'nrns/_.php';
 require 'nrns/autoloader.php';
 
 nrns::init();
