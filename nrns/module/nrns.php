@@ -10,6 +10,8 @@ nrns::module('nrns', [])
 		require 'service/request.php';
 		require 'service/response.php';
 		require 'service/scope.php';
+		require 'service/client.php';
+		require 'service/cookie.php';
 
 	})
 	
@@ -17,9 +19,10 @@ nrns::module('nrns', [])
 		return NRNS_VERSION;
 	})
 	->service('request', 'nrns\\request')
-	//->provider('responseProvider', 'nrns\\responseProvider');
 	->service('response', 'nrns\\response')
 	->service('rootScope', 'nrns\\scope')
+	->service('client', 'nrns\\client')
+	->service('cookie', 'nrns\\cookie')
 	;
 
 
