@@ -46,7 +46,7 @@ class _ {
 	
 	
 	
-	public function invoke($closure, $args=[]) {
+	public static function invoke($closure, $args=[]) {
 		
 		if(is_callable($closure)) {
 			return call_user_func_array($closure, $args);
