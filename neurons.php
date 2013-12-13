@@ -81,7 +81,7 @@ final class nrns {
 	
 	
 	
-	public function Exception($message) {
+	public static function Exception($message) {
 		return new NRNSException($message);
 	}
 	
