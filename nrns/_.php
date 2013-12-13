@@ -58,22 +58,59 @@ class _ {
 	}
 	
 
-	public function properties($closure) {
+	public static function properties($closure) {
 		$ref = new ReflectionFunction($closure);
 		return _::pluck($ref->getParameters(), 'name');
 	}
 	
 
-	public function last($array) {
+	public static function last($array) {
 		return end($array);
 	}
 
 
-	public function slice($array, $a, $b) {
+	public static function slice($array, $a, $b) {
 		return array_slice($array, $a, $b);
 	}
 
-
+	public static function parseDotString($dotstring, $scope) {
+		
+		$parts = explode('.', $dotstring);
+		if(count($parts)>1) {
+			
+			$active = $scope;
+			if( is_array($active) ) {
+				foreach($parts as $part) {
+				
+					if( isset($active[$part]) ) {
+						$active = $active[$part];
+					} else {
+						return false;
+					}
+				
+				}
+			}
+		
+			if( is_object($active) ) {
+				foreach($parts as $part) {
+				
+					if( isset($active->{$part}) ) {
+						$active = $active->{$part};
+					} else {
+						return false;
+					}
+				
+				}
+			
+			}
+			return $active;
+		} else {
+			if( $active = self::getProperty($scope, $dotstring) ) {
+				return $active;
+			}
+		}
+		
+	}
 	
 }
 

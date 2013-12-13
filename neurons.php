@@ -77,17 +77,7 @@ final class nrns {
 	
 	
 	
-	public static function template($filename, $globals=[]) {
-		if( file_exists($filename) ) {
-			extract($globals);
-			unset($globals);
-			ob_start();
-				require $filename;
-			$content = ob_get_contents();
-			ob_end_clean();
-			return $content;
-		}
-	}
+	
 	
 	
 	

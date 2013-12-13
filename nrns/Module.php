@@ -13,7 +13,7 @@
 			
 			
 			$this->on('wakeup', function(){
-				$this->trigger('init');
+				$this->trigger('init', $this);
 				
 			});
 			
