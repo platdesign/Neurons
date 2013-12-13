@@ -3,6 +3,9 @@
 	use nrns;
 
 	class nrnsProvider extends nrns\Provider {
+		
+		public $devMode = false;
+		
 		public function __construct() {
 			
 			$this->on('runApp', function(){

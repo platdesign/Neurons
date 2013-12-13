@@ -61,9 +61,14 @@ final class nrns {
 	}
 
 
-
+	public static function devMode() {
+		nrns::$injection->provider('nrnsProvider')->devMode = true;
+	}
 	
 	public static function run() {
+		
+		$nrns = nrns::$injection->provider('nrnsProvider');
+		
 		try {
 			nrns::$injection->provider('moduleProvider')->wakeUpModules();
 			nrns::$injection->provider('nrnsProvider')->trigger('runApp');
