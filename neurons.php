@@ -3,8 +3,7 @@
 define('nrns', true);
 define('NRNS_VERSION', '0.1.0');
 
-define('__SCRIPT__', dirname($_SERVER['DOCUMENT_ROOT'].DIRECTORY_SEPARATOR.$_SERVER['SCRIPT_NAME']));
-
+define('__SCRIPT__', dirname($_SERVER['SCRIPT_FILENAME']));
 
 
 require 'nrns/_.php';
