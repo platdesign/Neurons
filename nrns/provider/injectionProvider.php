@@ -24,7 +24,7 @@
 					// Let the provider know that it will be injected now
 					$provider->trigger('inject');
 					
-					if(strrchr($key, 'Provider')) {
+					if(strpos($key, 'Provider')) {
 						// Return provider
 						$args[$key] = $provider;
 					} else {
@@ -74,18 +74,29 @@
 	
 		public function provide($name, $thing, $locals=[]) {
 			
-			$name = rtrim($name, 'Provider').'Provider';
+			$name = $this->sanitizeProviderName($name);
 			
-			$provider = is_a($thing, 'nrns\Provider') ? $thing : $this->invoke($thing, $locals);
+			$provider = function()use($thing, $locals){
+				return is_a($thing, 'nrns\Provider') ? $thing : $this->invoke($thing, $locals);
+			};
 		
 			$this->providers->set($name, $provider);
 		}
 	
 		public function provider($name) {
-			$name = rtrim($name, 'Provider').'Provider';
+			$name = $this->sanitizeProviderName($name);
+			
 			
 			if($provider = $this->providers->get($name)) {
+				
+				if(is_callable($provider)) {
+					$provider = call_user_func($provider);
+					$this->providers->set($name, $provider);
+				}
+				
 				return $provider;
+				
+				
 			} else {
 				throw nrns::Exception('Provider "'.$name.'" not found!');
 			}
@@ -96,6 +107,28 @@
 			return $this->provider($name)->getService();
 		}
 	
+	
+		private function sanitizeProviderName($name) {
+			
+			
+			if(!strrpos($name, 'Provider')) {
+				$name .= 'Provider';
+			}
+			
+			
+			return $name;
+		}
+		
+		
+		public function getInstantiatedProviders() {
+			$result = [];
+			foreach($this->providers->getAll() as $key => $val) {
+				if(!is_callable($val)) {
+					$result[] = $key;
+				}
+			}
+			return $result;
+		}
 	}
 
 	

@@ -13,12 +13,17 @@
 				$this->trigger('init');
 				$this->trigger('run');
 				$this->trigger('render');
+				$this->trigger('shutdown');
 			});
 			
 		}
 		
 		public function module($name) {
 			return nrns::module($name);
+		}
+		
+		public function newObject() {
+			return new nrns\JSObject();
 		}
 	}
 	

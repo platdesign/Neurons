@@ -15,14 +15,36 @@ nrns::module('nrns', [])
 
 	})
 	
-	->service('nrns.version', function(){
-		return NRNS_VERSION;
-	})
+	
 	->service('request', 'nrns\\request')
 	->service('response', 'nrns\\response')
 	->service('rootScope', 'nrns\\scope')
 	->service('client', 'nrns\\client')
 	->service('cookie', 'nrns\\cookie')
+		
+		
+		
+		
+	->service('pdo', function($nrns){
+		
+		$pdo = $nrns->newObject();
+		
+		$pdo->mysql = function($db, $user, $secret='', $host='localhost') {
+			$pdo = new \PDO("mysql:host=$host;dbname=$db;charset=utf8",$user,$secret);
+			$pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+			return $pdo;
+		};
+		
+		$pdo->sqlite = function($file) {
+			$pdo = new \PDO("sqlite:".__SCRIPT__.DIRECTORY_SEPARATOR.$file);
+			$pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+			return $pdo;
+		};
+			
+		return $pdo;
+	
+	})	
+		
 	;
 
 
