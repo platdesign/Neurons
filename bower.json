@@ -11,5 +11,5 @@
 	"framework"
   ],
   "license": "MIT",
-  "main":"nrns.php"
+  "main":"neurons.php"
 }
