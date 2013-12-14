@@ -32,11 +32,11 @@
 	
 		public function service($name, $service) {
 			$this->on('after:init', function()use($name, $service) {
-				$provider = new nrns\provider\ServiceProvider();
-				
+
+				$provider = nrns::$injection->invoke('nrns\provider\ServiceProvider');
 				$provider->setService(nrns::$injection->invoke($service));
 				
-				return nrns::$injection->provide($name, $provider, ['module'=>$this]);
+				nrns::$injection->provide($name, $provider, ['module'=>$this]);
 				
 			});
 			return $this;
@@ -49,7 +49,16 @@
 			return $this;
 		}
 		
-		public function factory($name, $factory) {
+		public function factory($name, $closure) {
+			$this->on('after:init', function()use($name, $closure) {
+				
+				$provider = nrns::$injection->invoke('nrns\provider\FactoryProvider');
+				
+				$provider->setClosure($closure);
+				
+				nrns::$injection->provide($name, $provider, ['module'=>$this]);
+				
+			});
 			return $this;
 		}
 	
