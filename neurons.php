@@ -1,9 +1,15 @@
 <?PHP
 
 define('nrns', true);
-define('NRNS_VERSION', '0.1.0');
+define('version', '0.1.0');
 
 define('__SCRIPT__', dirname($_SERVER['SCRIPT_FILENAME']));
+
+
+error_reporting(-1);
+set_error_handler('nrns::errorHandler');
+register_shutdown_function('nrns::run');
+
 
 
 require 'nrns/_.php';
@@ -17,16 +23,11 @@ require 'nrns/module/nrns.php';
 
 
 
-
-
-
-
-
-
-
 final class nrns {
 	public static $injection;
 	private static $autoloader;
+	private static $error;
+	
 	
 	public static function init() {
 		self::$autoloader = new nrns\autoloader();
@@ -40,11 +41,13 @@ final class nrns {
 		$ip->provide('nrnsProvider', 'nrns\provider\nrnsProvider');
 		
 		
-		register_shutdown_function('nrns::run');
+		
 	}
 
 
-
+	public static function errorHandler() {
+		self::$error = func_get_args();
+	}
 	
 	public static function module($name, $deps=null) {
 
@@ -67,23 +70,27 @@ final class nrns {
 	
 	public static function run() {
 		
-		$nrns = nrns::$injection->provider('nrnsProvider');
-		
 		try {
+			$nrns = nrns::$injection->provider('nrnsProvider');
+			
+			if( self::$error ) {
+				$e = self::$error;
+				throw nrns::Exception('<b>' . $e[1]. '</b> in '. $e[2] . ' on line ' . $e[3], $e[0]);
+			}
+			
 			nrns::$injection->provider('moduleProvider')->wakeUpModules();
-			nrns::$injection->provider('nrnsProvider')->trigger('runApp');
+			$nrns->trigger('runApp');
 		} catch(Exception $e) {
-			echo $e->getMessage();
+			if($nrns->devMode) {
+				echo $e->getMessage();
+			} else {
+				echo 'An error has occurred. Please contact the admin.';
+			}
+			
 		}
 	}
 	
 
-	
-	
-	
-	
-	
-	
 	
 	public static function Exception($message) {
 		return new NRNSException($message);

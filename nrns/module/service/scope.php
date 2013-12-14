@@ -7,10 +7,24 @@
 	
 	class scope {
 		
+		private $parent;
+		
+		public function __construct() {
+			$this->parent = $this;
+		}
+		
 		public function newChild() {
 			$clone = clone $this;
 			$clone->parent = $this;
 			return $clone;
+		}
+		
+		public function parent() {
+			return $this->parent;
+		}
+		
+		public function __tostring() {
+			return (string) json_encode($this);
 		}
 		
 	}

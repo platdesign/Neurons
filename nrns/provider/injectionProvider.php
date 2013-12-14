@@ -21,6 +21,9 @@
 					
 					$provider = $this->provider($key);
 					
+					// Let the provider know that it will be injected now
+					$provider->trigger('inject');
+					
 					if(strrchr($key, 'Provider')) {
 						// Return provider
 						$args[$key] = $provider;
