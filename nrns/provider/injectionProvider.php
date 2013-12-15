@@ -11,6 +11,8 @@
 			$this->provide('injectionProvider', $this);
 		}
 	
+		
+	
 		public function annotate($params, $locals=[]) {
 			$args = [];
 			foreach($params as $key) {
