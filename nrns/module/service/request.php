@@ -59,11 +59,9 @@
 		 */
 		public function cached_getBase() {
 			$fullUrl 	= $this->getUrl();
-			$scriptpath = $this->getScriptPath();
-			$route = $this->getRoute();
-			$temp = rtrim(substr($fullUrl, 0, strrpos($fullUrl, $scriptpath)).$scriptpath, "/");
+			$scriptpath = $this->getScriptPath().$this->getRoute();
+			return rtrim(substr($fullUrl, 0, strrpos($fullUrl, $scriptpath)).$scriptpath, "/");
 			
-			return substr($temp, 0, strrpos($temp, $route));
 		}
 	
 	
