@@ -58,7 +58,7 @@
 		 * @author Christian Blaschke
 		 */
 		public function cached_getBase() {
-			return $this->getProtocol()."://".$_SERVER['SERVER_NAME'].$this->getScriptPath();
+			return rtrim($this->getProtocol()."://".$_SERVER['SERVER_NAME'].$this->getScriptPath(), "/");
 		}
 	
 	
@@ -147,7 +147,7 @@
 		 * @author Christian Blaschke
 		 */
 		public function redirectRoute($route) {
-			$this->redirect(str_replace("//", "/", $this->getBase().$route));
+			$this->redirect($this->getBase().$route);
 		}
 	}
 	
