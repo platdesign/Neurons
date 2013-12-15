@@ -58,8 +58,12 @@
 		 * @author Christian Blaschke
 		 */
 		public function cached_getBase() {
+			
+			return $this->getProtocol()."://".$_SERVER['SERVER_NAME'].$this->getScriptPath();
+			
+			
 			$fullUrl 	= $this->getUrl();
-			$scriptpath = $this->getScriptPath().$this->getRoute();
+			$scriptpath = $this->getScriptPath();
 			return rtrim(substr($fullUrl, 0, strrpos($fullUrl, $scriptpath)).$scriptpath, "/");
 			
 		}
