@@ -147,7 +147,7 @@
 		 * @author Christian Blaschke
 		 */
 		public function redirectRoute($route) {
-			$this->redirect($this->getBase().$route);
+			$this->redirect(str_replace("//", "/", $this->getBase().$route));
 		}
 	}
 	
