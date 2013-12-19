@@ -12,6 +12,7 @@ nrns::module('nrns', [])
 		require 'service/scope.php';
 		require 'service/client.php';
 		require 'service/cookie.php';
+		require 'service/URI.php';
 
 	})
 	
@@ -21,6 +22,9 @@ nrns::module('nrns', [])
 	->service('rootScope', 'nrns\\scope')
 	->service('client', 'nrns\\client')
 	->service('cookie', 'nrns\\cookie')
+	->service('_URI', function(){
+		return nrns\URI::createFromCurrent();
+	})
 		
 		
 		
