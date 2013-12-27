@@ -11,12 +11,6 @@
 			$this->name = $_moduleName;
 			$this->deps = array_merge($_moduleDeps, ['nrns']);
 			
-			
-			$this->on('wakeup', function(){
-				$this->trigger('init', $this);
-				
-			});
-			
 			$nrns->on('run', function(){
 				$this->trigger('run');
 			});
@@ -28,14 +22,14 @@
 		}
 	
 		public function config($closure) {
-			$this->on('init', function()use($closure){
+			$this->on('wakeup', function()use($closure){
 				nrns::$injection->invoke($closure->bindTo($this), ['module'=>$this]);
 			});
 			return $this;
 		}
 	
 		public function service($name, $service) {
-			$this->on('after:init', function()use($name, $service) {
+			$this->on('after:wakeup', function()use($name, $service) {
 				
 				$provider = function()use($service) { 
 					$p = nrns::$injection->invoke('nrns\provider\ServiceProvider');
@@ -50,14 +44,14 @@
 		}
 		
 		public function provider($name, $provider) {
-			$this->on('after:init', function()use($name, $provider) {
+			$this->on('after:wakeup', function()use($name, $provider) {
 				nrns::$injection->provide($name, $provider, ['module'=>$this]);
 			});
 			return $this;
 		}
 		
 		public function factory($name, $closure) {
-			$this->on('after:init', function()use($name, $closure) {
+			$this->on('after:wakeup', function()use($name, $closure) {
 				
 				$provider = function()use($closure) {
 					$p = nrns::$injection->invoke('nrns\provider\FactoryProvider');
@@ -70,6 +64,10 @@
 			});
 			return $this;
 		}
+	
+	
+	
+	
 	
 		public function run($closure) {
 			$this->on('run', function()use($closure){

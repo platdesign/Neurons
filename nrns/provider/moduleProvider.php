@@ -3,10 +3,18 @@
 	use nrns;
 
 	class moduleProvider extends nrns\Provider {
+		use nrns\events;
+		
 		private $modules;
 	
-		public function __construct() {
+		public function __construct($nrns) {
 			$this->modules = new nrns\keyValStore();
+			
+			
+			$nrns->on('bootstrap', function(){
+				$this->wakeUpModules();
+			});
+			
 		}
 	
 		public function create($name, $deps=[]) {

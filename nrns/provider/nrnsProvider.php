@@ -10,10 +10,12 @@
 			
 			$this->on('runApp', function(){
 				
+				$this->trigger('bootstrap');
 				$this->trigger('init');
 				$this->trigger('run');
 				$this->trigger('render');
 				$this->trigger('shutdown');
+				
 			});
 			
 		}

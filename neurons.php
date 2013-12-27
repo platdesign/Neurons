@@ -78,7 +78,6 @@ final class nrns {
 				throw nrns::Exception('<b>' . $e[1]. '</b> in '. $e[2] . ' on line ' . $e[3], $e[0]);
 			}
 			
-			nrns::$injection->provider('moduleProvider')->wakeUpModules();
 			$nrns->trigger('runApp');
 		} catch(Exception $e) {
 			if($nrns->devMode) {
