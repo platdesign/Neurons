@@ -12,6 +12,7 @@ nrns::module('nrns', [])
 		require 'service/scope.php';
 		require 'service/client.php';
 		require 'service/cookie.php';
+		require 'service/session.php';
 		require 'service/URI.php';
 
 	})
@@ -22,6 +23,7 @@ nrns::module('nrns', [])
 	->service('rootScope', 'nrns\\scope')
 	->service('client', 'nrns\\client')
 	->service('cookie', 'nrns\\cookie')
+	->service('session', 'nrns\\session')	
 	->service('_URI', function(){
 		return nrns\URI::createFromCurrent();
 	})
@@ -34,8 +36,13 @@ nrns::module('nrns', [])
 		$pdo = $nrns->newObject();
 		
 		$pdo->mysql = function($db, $user, $secret='', $host='localhost') {
-			$pdo = new \PDO("mysql:host=$host;dbname=$db;charset=utf8",$user,$secret);
-			$pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+			try {
+				$pdo = new \PDO("mysql:host=$host;dbname=$db;charset=utf8",$user,$secret);
+				$pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+			} catch(Exception $e) {
+				throw new Exception($e->getMessage());
+			}
+			
 			return $pdo;
 		};
 		
