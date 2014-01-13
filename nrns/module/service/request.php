@@ -27,9 +27,9 @@
 			if(stripos($urlpath, $scriptpath) == 0) {
 				$route = substr($urlpath, strlen($scriptpath));
 			}
-			if($route[0] != "/") { $route = "/".$route; }
+			if($route[0] != "/") { $route = "/".rtrim($route, '/'); }
 			
-			return rtrim($route, '/');
+			return $route;
 		}
 
 
