@@ -29,7 +29,7 @@
 			}
 			if($route[0] != "/") { $route = "/".$route; }
 			
-			return $route;
+			return rtrim($route, '/');
 		}
 
 
