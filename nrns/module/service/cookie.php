@@ -12,8 +12,8 @@
 			$_COOKIE[$key] = $val;
 		}
 		
-		public function del($key) {
-			setcookie($key, null, time()-1);
+		public function del($key, $path=null, $domain=null) {
+			setcookie($key, null, time()-1, $path, $domain);
 		}
 		
 		public function get($key) {
