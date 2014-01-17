@@ -24,6 +24,9 @@
 		public function setCode($code) {
 			$this->http_response_code = $code;
 		}
+		public function getCode() {
+			return $this->http_response_code;
+		}
 		
 		public function ContentType($type) {
 			
