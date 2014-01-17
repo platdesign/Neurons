@@ -121,7 +121,9 @@
 			return file_get_contents('php://input');
 		}
 
-
+		public function getHeader() {
+			return (object) getallheaders();
+		}
 
 		/**
 		 * Redirects to an url
