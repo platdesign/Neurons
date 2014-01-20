@@ -1,7 +1,7 @@
 <?PHP
 
 define('nrns', true);
-define('version', '0.1.0');
+define('version', '0.1.1');
 
 define('__SCRIPT__', dirname($_SERVER['SCRIPT_FILENAME']));
 

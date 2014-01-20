@@ -24,7 +24,7 @@
 		}
 		
 		public function __tostring() {
-			return (string) json_encode($this);
+			return (string) json_encode($this, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK);
 		}
 		
 	}
