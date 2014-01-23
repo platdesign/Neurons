@@ -59,7 +59,12 @@ class _ {
 	
 
 	public static function properties($closure) {
-		$ref = new ReflectionFunction($closure);
+		if( is_string($closure) && strpos($closure, '::') != 0 ) {
+			$ref = new ReflectionMethod($closure);
+		} else {
+			$ref = new ReflectionFunction($closure);
+		}
+		
 		return _::pluck($ref->getParameters(), 'name');
 	}
 	
