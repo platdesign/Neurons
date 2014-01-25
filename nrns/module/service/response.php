@@ -12,7 +12,11 @@
 		
 		public function __construct($nrns) {
 			$nrns->on('render', function(){
+				
+ 				
+				$this->sendHeader('Last-Modified: ' . gmdate("D, d M Y H:i:s", $this->getlastmod()) .' GMT');
 				$this->sendHeader('Content-type: '.$this->contentType);
+
 				echo $this->body;
 			});
 		}
@@ -46,6 +50,16 @@
 
 		public function sendHeader($content) {
 			header($content, false, $this->http_response_code);
+		}
+
+		private function getlastmod() {
+			$files = get_included_files();
+
+			foreach($files as $file) {
+				$times[] =  filemtime($file);
+			}
+			
+			return max($times);
 		}
 
 	}
