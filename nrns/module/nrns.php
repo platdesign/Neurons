@@ -14,10 +14,11 @@ nrns::module('nrns', [])
 		require 'service/cookie.php';
 		require 'service/session.php';
 		require 'service/URI.php';
+		require 'provider/registryProvider.php';
 
 	})
 	
-	
+	->provider('registryProvider', 'nrns\\registryProvider')
 	->service('request', 'nrns\\request')
 	->service('response', 'nrns\\response')
 	->service('rootScope', 'nrns\\scope')

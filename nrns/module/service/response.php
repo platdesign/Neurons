@@ -14,7 +14,7 @@
 			$nrns->on('render', function(){
 				
  				
-				$this->sendHeader('Last-Modified: ' . gmdate("D, d M Y H:i:s", $this->getlastmod()) .' GMT');
+				//$this->sendHeader('Last-Modified: ' . gmdate("D, d M Y H:i:s", $this->getlastmod()) .' GMT');
 				$this->sendHeader('Content-type: '.$this->contentType);
 
 				echo $this->body;
