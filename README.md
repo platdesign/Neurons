@@ -58,9 +58,8 @@ Unkompliziert eine JSON-API erstellen.
 
 ##Contact##
 
-
-[![qwe](http://vizcard.bedit.de/plati/as.svg)](http://vizcard.bedit.de/plati)
-
+- [mail@platdesign.de](mailto:mail@platdesign.de)
+- [platdesign](https://twitter.com/platdesign) on Twitter
 
 [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/platdesign/neurons/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
 
