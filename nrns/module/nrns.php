@@ -16,6 +16,7 @@ nrns::module('nrns', [])
 		require 'service/URI.php';
 		require 'provider/registryProvider.php';
 
+		require 'class/mysqlPDO.php';
 	})
 	
 	->provider('registryProvider', 'nrns\\registryProvider')
@@ -37,14 +38,7 @@ nrns::module('nrns', [])
 		$pdo = $nrns->newObject();
 		
 		$pdo->mysql = function($db, $user, $secret='', $host='localhost') {
-			try {
-				$pdo = new \PDO("mysql:host=$host;dbname=$db;charset=utf8",$user,$secret);
-				$pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-			} catch(Exception $e) {
-				throw new Exception($e->getMessage());
-			}
-			
-			return $pdo;
+			return new nrns\mysqlPDO($db, $user, $secret, $host);
 		};
 		
 		$pdo->sqlite = function($file) {
