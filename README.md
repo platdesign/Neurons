@@ -64,3 +64,10 @@ Unkompliziert eine JSON-API erstellen.
 [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/platdesign/neurons/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
 
 
+
+
+
+
+
+
+[![Analytics](https://ga-beacon.appspot.com/UA-54136231-1/neurons/readme)](https://github.com/igrigorik/ga-beacon)
