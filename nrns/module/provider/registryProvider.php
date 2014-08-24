@@ -23,10 +23,7 @@ use nrns;
 		public function getService() {
 			return function($key){
 				$path = $this->fs->createDir( $this->dirname )->createDir($key);
-
-				return $this->injection->invoke('nrns\\registryProviderService', ['_path'=>$path]);
-
-				
+				return $this->injection->invoke('nrns\\registryProviderService', ['_path' => $path]);
 			};
 		}
 		
